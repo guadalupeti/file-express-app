@@ -3,6 +3,16 @@ from pathlib import Path
 from datetime import datetime
 from tkinter import *
 from tkinter import filedialog
+import shutil
+
+FILE_CATEGORIES = {
+    "Images": [".jpg", ".jpeg", ".png", ".gif", ".bmp", ".svg"],
+    "Videos": [".mp4", ".mkv", ".avi", ".mov", ".wmv"],
+    "Documents": [".pdf", ".docx", ".doc", ".txt", ".xlsx", ".pptx"],
+    "Audio": [".mp3", ".wav", ".ogg", ".flac"],
+    "Compressed": [".zip", ".rar", ".7z", ".tar", ".gz"],
+    "Others": [] 
+}
 
 def open_file():
     file_path = filedialog.askdirectory(title = 'Select a file: ')
@@ -41,6 +51,36 @@ def rename_all_files(folder: str, define_for: str):
                 os.rename(file[0], new_path)
 
             return True
+
+def organize_file_in_folders(folder: str, define_for: str):
+
+    match define_for:
+        case 'by_type':
+            for file in os.listdir(folder):
+                complete_path = os.path.join(folder,file)
+
+                if not os.path.isfile(complete_path):
+                    continue
+
+
+                _, extension = os.path.splitext(file)
+                extension = extension.lower()
+
+                categorie = 'Others'
+
+                for cat, ext_list in FILE_CATEGORIES.items():
+                    if extension in ext_list:
+                        categorie = cat
+                        break
+                
+                destiny_folder = os.path.join(folder, categorie)
+                os.makedirs(destiny_folder, exist_ok=True)
+
+                new_path = os.path.join(destiny_folder, file)
+                shutil.move(complete_path, new_path)
+
+                
+
         
 def open_window():
     global select_file_button 
