@@ -140,3 +140,14 @@ def rename_all_files(folder: str, define_for: str):
                 os.rename(file[0], new_path)
 
             return True
+
+def search_file(file_name):
+    
+    user_dir = os.path.expanduser('~')
+    files = []
+
+    for root, dirs, files in os.walk(user_dir):
+        if file_name in files:
+            files.append(os.path.join(root, file_name))
+        
+    return files
